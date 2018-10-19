@@ -1,0 +1,209 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>鬧鐘</title>
+<link href='http://fonts.googleapis.com/css?family=Schoolbell' rel='stylesheet' type='text/css'>
+
+<style>
+	
+	body, html{
+		margin:0px;
+		color:#0E6A89;
+		font-family: 'Schoolbell', cursive, "微軟正黑體";
+	}
+	
+	.container{
+		width:800px;
+		background:#6CF;
+		margin-left:auto;
+		margin-right:auto;
+	}
+	
+	.header{
+		width:100%;
+		height:230px;
+		background:#27809D;
+		line-height:40px;
+		text-align:center;
+		padding:10px;
+		box-sizing:border-box;
+		
+		color:#fff;
+		letter-spacing:5px;
+		font-size:30px;
+	}
+	
+	.content{
+		width:100%;
+		height:500px;
+		background:#9BD2E4;
+		padding:20px 30px;
+		box-sizing:border-box;
+		
+		text-align:center;
+	}
+	
+	.footer{
+		width:100%;
+		height:50px;
+		background:#0E6A89;
+		line-height:50px;
+		text-align:center;
+		
+		color:#fff;
+		letter-spacing:5px;
+	}
+	
+	.subcontainer{
+		width:500px;
+		border-radius:20px;
+		background:#68B3CC;
+		margin-left:auto;
+		margin-right:auto;
+		padding:20px;
+		box-sizing:border-box;
+	}
+	
+	#detail{
+		margin-left:auto;
+		margin-right:auto;
+		width:50%;
+		font-size:15px;
+		line-height:10px;
+		text-align:left;
+	}
+	
+
+</style>
+
+<script language="JavaScript" type="text/javascript">
+	
+	setInterval("clock()",1000); //每秒都去判斷時間到了沒
+	i = 0;
+	
+	function add(){ //新增提醒事項		
+			
+			str = document.getElementById("textEvent").value;
+			h = document.getElementById("selectHour").value;
+			m = document.getElementById("selectMin").value;
+			s = document.getElementById("selectSec").value;
+			
+			bgm = document.getElementById("fileName").value;
+			document.getElementById("player").src = bgm.substr(12,(bgm.length-12));
+			
+			i++;
+			/*判斷用時間*/
+			commandtry = "timeup" + i + "=h+':'+m+':'+s";
+			eval(commandtry);
+			
+			/*顯示用資訊*/
+			command = "reminders" + i + "=str+' '+timeup" + i;
+			eval(command);
+			com = "document.getElementById('divInfo').innerHTML += reminders"+i + "+'<br>';";
+			eval(com);
+			commstr = "str"+i+"=str";
+			eval(commstr);
+
+			document.getElementById("textEvent").value ="";
+			document.getElementById("selectHour").value = "0";
+			document.getElementById("selectMin").value = "0";
+			document.getElementById("selectSec").value = "0";
+	}
+	
+	function clock(){ //判斷時間到了沒&播放音樂&警告視窗
+		date1 = new Date();
+		currently = date1.getHours() + ":" + date1.getMinutes() + ":" + date1.getSeconds();
+		//alert(currently);
+		for(var j=1;j<=i;j++){
+			if(eval("timeup"+j)==currently){
+				document.getElementById("player").currentTime = 0;
+				document.getElementById("player").play();
+				alert("時間到了!!快點"+eval("str"+j));
+			}			
+		}
+	
+		document.getElementById("curTime").innerHTML = "系統時間:"+currently;
+	}
+	
+	function check(){ //判斷是不是mp3檔案(目前好像無效中)
+		filestr = document.getElementById("fileName").value;
+		n = filestr.substr((bgm.length-4),4);
+		if(n!=".mp3"){
+			alert("這不是mp3檔阿~");
+			document.getElementById("fileName").value = null;
+		}else{
+			return false;	
+		}
+	}
+	
+	function creatSelect(num){//創造下拉式選單選項
+		var ended = num;
+		for(var i=0;i<=ended;i++){
+			document.writeln("<option value='" + i + "'>" + i + "</option>");	
+		}	
+	}
+	
+</script>
+</head>
+
+<body>
+
+	<div class="container">
+    
+    	<div class="header">
+        	鬧鐘<p/>
+            <div id="detail">
+                1. 此檔要與音樂在同一層資料夾哦~<p/>
+                2. 音樂檔名包含空白鍵可能會發生錯誤哦~<p/>
+                3. 好像一定要mp3檔案哦~<p/>
+            </div>
+            <p>
+            <div id="curTime"></div>
+    	</div>
+        
+        <!------------------------------------------->
+        
+        <div class="content">	
+      		<label>鬧鈴:</label>
+            <input type="file" name="fileName" id="fileName"/><p/>
+      		<label>提醒事項:</label>
+            <input type="text" name="textEvent" id="textEvent"><p/>           
+    		<label>時:</label>
+            <select name="selectHour" id="selectHour">
+              	<script language="JavaScript" type="text/javascript">
+                	creatSelect(23)	;
+                </script>
+            </select>
+            <label>分:</label>
+   		    <select name="selectMin" id="selectMin">
+              	<script language="JavaScript" type="text/javascript">
+                	creatSelect(59)	;
+                </script>
+            </select>
+            <label>秒:</label>
+   		    <select name="selectSec" id="selectSec">
+              	<script language="JavaScript" type="text/javascript">
+                	creatSelect(59)	;
+                </script>
+            </select>
+   		  
+      		<p/>
+   		  	<input type="button" name="btnAdd" id="btnAdd" value="新增"  onclick="add()"/><p/>
+    		<div class="subcontainer">
+      			<div class="event" id="divInfo"></div><p/>
+                <!------------------------------------------->   
+				<div class="event" id="divbgm">
+                	<audio id="player" loop=false controls=true></audio>
+                </div><p/>
+    		</div>
+        </div>
+        <!------------------------------------------->
+        <div class="footer">
+        	Copyright&copy;2015, Ayakashi.
+        </div>
+        
+    </div>
+
+</body>
+</html>
