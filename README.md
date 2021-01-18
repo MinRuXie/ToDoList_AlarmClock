@@ -1,4 +1,4 @@
-# ToDoList_AlarmColock
+# ToDoList_AlarmClock
 
 ## How to use?
 1. Download `clock.html`.
